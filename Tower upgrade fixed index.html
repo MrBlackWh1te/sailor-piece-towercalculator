@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>G-HC8BVG0K8Q</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sailor Piece Tower Token Upgrade Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+
+<div class="bg-gray-800 p-6 rounded-2xl shadow-xl w-full max-w-xl">
+  <h1 class="text-2xl font-bold mb-4 text-center">⚔️ Tower Token Upgrade Calculator</h1>
+
+  <p class="text-gray-300 text-sm mb-6 text-center">Calculate BOTH total spent AND tokens needed to MAX</p>
+
+  <div class="space-y-4">
+
+    <div>
+      <label>Damage (current level 0-5)</label>
+      <input id="damage" type="number" min="0" max="5" value="0" class="w-full p-2 rounded bg-gray-700">
+    </div>
+
+    <div>
+      <label>Critical Power (0-5)</label>
+      <input id="critPower" type="number" min="0" max="5" value="0" class="w-full p-2 rounded bg-gray-700">
+    </div>
+
+    <div>
+      <label>Critical Chance (0-5)</label>
+      <input id="critChance" type="number" min="0" max="5" value="0" class="w-full p-2 rounded bg-gray-700">
+    </div>
+
+    <div>
+      <label>HP (0-5)</label>
+      <input id="hp" type="number" min="0" max="5" value="0" class="w-full p-2 rounded bg-gray-700">
+    </div>
+
+    <div>
+      <label>Luck (0-5)</label>
+      <input id="luck" type="number" min="0" max="5" value="0" class="w-full p-2 rounded bg-gray-700">
+    </div>
+
+    <button onclick="calculate()" class="w-full bg-blue-500 hover:bg-blue-600 p-2 rounded-xl font-bold">Calculate</button>
+
+  </div>
+
+  <div id="result" class="mt-6 text-sm"></div>
+</div>
+
+<script>
+function calculate() {
+  const damage = +document.getElementById('damage').value;
+  const critPower = +document.getElementById('critPower').value;
+  const critChance = +document.getElementById('critChance').value;
+  const hp = +document.getElementById('hp').value;
+  const luck = +document.getElementById('luck').value;
+
+  const costs = [750, 1000, 1250, 1750, 2500];
+  const hpCosts = [500, 650, 850, 1150, 1500];
+  const luckCosts = [1000, 1350, 1750, 2500, 3500];
+
+  function spent(level, arr) {
+    return arr.slice(0, level).reduce((a, b) => a + b, 0);
+  }
+
+  function remaining(level, arr) {
+    return arr.slice(level).reduce((a, b) => a + b, 0);
+  }
+
+  const spentTotal =
+    spent(damage, costs) +
+    spent(critPower, costs) +
+    spent(critChance, costs) +
+    spent(hp, hpCosts) +
+    spent(luck, luckCosts);
+
+  const remainingTotal =
+    remaining(damage, costs) +
+    remaining(critPower, costs) +
+    remaining(critChance, costs) +
+    remaining(hp, hpCosts) +
+    remaining(luck, luckCosts);
+
+  const resultHTML = `
+    <h2 class="text-lg font-bold mb-2">📊 Results</h2>
+
+    <p>⚔️ Damage: +${damage * 5}% (Need ${remaining(damage, costs)} tokens to max)</p>
+    <p>💥 Crit Power: +${critPower * 3}% (Need ${remaining(critPower, costs)} tokens)</p>
+    <p>🎯 Crit Chance: +${critChance}% (Need ${remaining(critChance, costs)} tokens)</p>
+    <p>❤️ HP: +${hp * 7.5}% (Need ${remaining(hp, hpCosts)} tokens)</p>
+    <p>🍀 Luck: +${luck * 3}% (Need ${remaining(luck, luckCosts)} tokens)</p>
+
+    <hr class="my-3 border-gray-600">
+
+    <p>💸 Already Spent: <b>${spentTotal}</b> tokens</p>
+    <p>🔥 Needed to MAX EVERYTHING: <b>${remainingTotal}</b> tokens</p>
+  `;
+
+  document.getElementById('result').innerHTML = resultHTML;
+}
+</script>
+
+</body>
+</html>
